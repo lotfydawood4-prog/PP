@@ -1100,7 +1100,7 @@ body {
 
   <!-- Birthday Timer -->
   <div class="bday-timer-box" id="bdayTimerBox">
-    <div class="bday-timer-title">⏳ من وأنت في الدنيا</div>
+    <div class="bday-timer-title" id="bdayTimerTitle">⏳ باقي على عيد ميلادك</div>
     <div class="bday-timer-row">
       <div class="bday-unit">
         <span class="bday-val" id="t-days">00</span>
@@ -1247,9 +1247,7 @@ body {
       </div>
       <div class="letter-ribbon">🎀</div>
       <div class="letter-number">Letter 01</div>
-      <div class="letter-msg">اولا الرساله الي وصلتك لهنا انا مش عارف اكتب هنا اي بصراحه فالكلام الانجليزي الي جاي ده بق حاولي تحلي معاه عشان انا سارقه من الai ولو فهمتي حاجه ابقي عرفيني 😂😂
-
-انا حاسس ان ده عيد ميلادي مش ميلادك انتي والله 😂😂
+      <div class="letter-msg">انا حاسس ان ده عيد ميلادي مش ميلادك انتي والله 😂😂
 
 يلا هاف أنيس داي</div>
       <div class="letter-hearts">💗 💕 💗</div>
@@ -1283,9 +1281,7 @@ Happy Birthday, NONY! May you always be the beautiful blessing in my life that n
 
 I wish you a new year filled with laughter, beautiful moments that make your heart happy, and all the success you deserve. I hope your day is as bright and wonderful as you are.
 
-Have a fantastic birthday, NONY, and may you always keep shining! ✨🎈
-
-طلاق تلاته معرف الكلام ده معناه اي بس شكلو حلو</div>
+Have a fantastic birthday, NONY, and may you always keep shining! ✨🎈</div>
       <div class="letter-hearts">❤️ 💓 ❤️</div>
     </div>
   </div>
@@ -1305,12 +1301,41 @@ for (let i = 0; i < 60; i++) {
   starsContainer.appendChild(star);
 }
 
-// ===== BIRTHDAY TIMER =====
+// ===== BIRTHDAY COUNTDOWN TIMER =====
 (function startBdayTimer() {
-  const bday = new Date('2008-07-24T00:00:00');
+  const titleEl = document.getElementById('bdayTimerTitle');
   function pad(n) { return String(n).padStart(2, '0'); }
+
+  function getNextBday() {
+    const now = new Date();
+    let year = now.getFullYear();
+    let next = new Date(year + '-07-24T00:00:00');
+    // لو النهارده بعد 24 يوليو خدها للسنة الجاية
+    if (now > next) {
+      next = new Date((year + 1) + '-07-24T00:00:00');
+    }
+    return next;
+  }
+
+  let nextBday = getNextBday();
+
   function update() {
-    const diff = Math.max(0, Math.floor((Date.now() - bday) / 1000));
+    const now = Date.now();
+    let diff = Math.floor((nextBday - now) / 1000);
+
+    if (diff <= 0) {
+      // النهاردة عيد ميلادها
+      titleEl.textContent = '🎉 كل سنة وانتي طيبة يا نور 🎉';
+      document.getElementById('t-days').textContent  = '00';
+      document.getElementById('t-hours').textContent = '00';
+      document.getElementById('t-mins').textContent  = '00';
+      document.getElementById('t-secs').textContent  = '00';
+      // اعادة حساب الميعاد الجاي للسنة اللي بعدها
+      nextBday = getNextBday();
+      return;
+    }
+
+    titleEl.textContent = '⏳ باقي على عيد ميلادك';
     const days  = Math.floor(diff / 86400);
     const hours = Math.floor((diff % 86400) / 3600);
     const mins  = Math.floor((diff % 3600) / 60);
